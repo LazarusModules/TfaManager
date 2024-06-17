@@ -14,7 +14,7 @@ class Tfa
     private $date;
     private $session_id;
     private $table;
-    private $this->code;
+    private $code;
     public function __construct()
     {
         $this->db = new Database();
