@@ -14,11 +14,13 @@ class Tfa
     private $date;
     private $session_id;
     private $table;
+    private $this->code;
     public function __construct()
     {
         $this->db = new Database();
         $this->date = new Date();
         $this->table = "tfa";
+        $this->code = random_int(1000000,999999);
         if($_SESSION['id'])
         {
             $this->session_id = $_SESSION['id'];
@@ -45,6 +47,7 @@ class Tfa
     }
 
 
+
     public function DeleteTfaRequest($id)
     {
         $query = "DELETE FROM ".$this->table." WHERE id=:id";
@@ -60,7 +63,7 @@ class Tfa
     {
         $this->ClearOldTfa();
         isset($_SESSION['id']) ? $this->session_id = $_SESSION['id'] : $this->session_id = '';
-        $code = random_int(100000, 999999);
+        
         $now = $this->date->AddDate("now")->format("Y-m-d H:i:s");
         $query = "SELECT * FROM ".$this->table." WHERE user_id=:id && expires > :expires ";
         $tfa = $this->db->GenerateQuery($query, [":id" => $this->session_id, ":expires" => $now]);
@@ -68,7 +71,7 @@ class Tfa
         if ($count == 0) {
                 $date = $this->date->AddDate("now")->add(new \DateInterval("PT5M"))->format("Y-m-d H:i:s");
                 $query = "INSERT INTO tfa (user_id,code,expires) VALUES(:user_id,:code,:expires)";
-                if(!$this->db->GenerateQuery($query, [":user_id" => $this->session_id, ":code" => $code, ":expires" => $date]))
+                if(!$this->db->GenerateQuery($query, [":user_id" => $this->session_id, ":code" => $this->code, ":expires" => $date]))
                 {
                     echo "Submission Failed";
                 }
