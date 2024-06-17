@@ -20,7 +20,7 @@ class Tfa
         $this->db = new Database();
         $this->date = new Date();
         $this->table = "tfa";
-        $this->code = random_int(1000000,999999);
+        $this->code = random_int(100000,999999);
         if($_SESSION['id'])
         {
             $this->session_id = $_SESSION['id'];
